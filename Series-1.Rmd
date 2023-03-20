@@ -1,0 +1,410 @@
+---
+  title: "D2"
+author: "Jugal Kedia"
+date: "20/11/2021"
+output:
+  word_document: default
+html_document: default
+---
+  
+  ```{r setup, include=FALSE}
+library(dplyr)
+library("ggplot2")
+library("knitr")
+library("tidyverse")
+library("MASS")
+# library("effects")
+library("brant")
+# library("sure")
+# library("PResiduals")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r importing data}
+data <- read.csv(file = 'Series1.csv')
+head(data)
+```
+
+```{r selecting specific cols}
+
+data <- data %>% dplyr::select(BH_30, BH_35C, BH_55A, BH_55H, BH_55K, AGEGRP, SEX)
+
+summary(data)
+
+```
+
+```{r deleting missing rows}
+
+data<-data[!(data$BH_30==".d"| data$BH_35C==".d" | data$BH_55A==".d" | data$BH_55H==".d"| data$BH_55K==".d"| data$AGEGRP==".d" | data$SEX==".d"  ),]
+summary(data)
+
+```
+```{r converting to numeric}
+data <-  as.data.frame(apply(data, 2, as.numeric))
+data
+summary(data)
+```
+
+
+
+```{r ordering 1to5}
+
+data$BH_30[data$BH_30==1] <- "5c"
+data$BH_30[data$BH_30==2] <- "4c"
+data$BH_30[data$BH_30==3] <- "3c"
+data$BH_30[data$BH_30==4] <- "2c"
+data$BH_30[data$BH_30==5] <- "1c"
+
+data$BH_30[data$BH_30=="5c"] <- "5"
+data$BH_30[data$BH_30=="4c"] <- "4"
+data$BH_30[data$BH_30=="3c"] <- "3"
+data$BH_30[data$BH_30=="2c"] <- "2"
+data$BH_30[data$BH_30=="1c"] <- "1"
+
+
+data$BH_35C[data$BH_35C==1] <- "2c"
+data$BH_35C[data$BH_35C==2] <- "2c"
+data$BH_35C[data$BH_35C==3] <- "2c"
+data$BH_35C[data$BH_35C==4] <- "1c"
+
+data$BH_35C[data$BH_35C=="2c"] <- "2"
+data$BH_35C[data$BH_35C=="2c"] <- "2"
+data$BH_35C[data$BH_35C=="2c"] <- "2"
+data$BH_35C[data$BH_35C=="1c"] <- "1"
+
+data <-  as.data.frame(apply(data, 2, as.numeric)) 
+
+data
+
+summary(data)
+```
+
+```{r renaming variables} 
+names(data)[names(data) == "BH_30"] <- "Mental_Health"
+names(data)[names(data) == "BH_35C"] <- "Exercise"
+names(data)[names(data) == "BH_55A"] <- "Concern_Health"
+names(data)[names(data) == "BH_55H"] <- "Concern_Social"
+names(data)[names(data) == "BH_55K"] <- "Concern_Confine"
+names(data)[names(data) == "AGEGRP"] <- "Age_Group"
+names(data)[names(data) == "SEX"] <- "Gender"
+
+data
+
+```
+
+
+
+
+```{r univariate analysis of dependent variable}
+
+
+# Basic histogram
+ggplot(data, aes(x=Mental_Health)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.5) +
+  geom_density(alpha=.2, fill="#FF6666", adjust = 5)
+
+
+
+
+#Q-Q PLOTS
+qqnorm(data$Mental_Health, pch = 1, frame = FALSE)
+qqline(data$Mental_Health, col = "steelblue", lwd = 2)
+
+
+
+# Normality test
+shapiro.test(data$Mental_Health)
+
+ks.test(data$Mental_Health, "pnorm", mean=mean(data$Mental_Health), sd=sd(data$Mental_Health))
+```
+
+```{r bivariate analysis of independent vs dependent varaible}
+
+
+# Scatterplot Exercise vs. Mental_Health
+
+ggplot(data, aes(x=Exercise, y=Mental_Health)) + 
+  geom_point() + 
+  geom_jitter() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank())
+
+
+# Scatterplot Concern_Health vs. Mental_Health
+
+ggplot(data, aes(x=Concern_Health, y=Mental_Health)) + 
+  geom_point() + 
+  geom_jitter() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank())
+
+
+# Scatterplot Concern_Social vs. Mental_Health
+
+ggplot(data, aes(x=Concern_Social, y=Mental_Health)) + 
+  geom_point() + 
+  geom_jitter() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank())
+
+# Scatterplot Concern_Confine vs. Mental_Health
+
+ggplot(data, aes(x=Concern_Confine, y=Mental_Health)) + 
+  geom_point() + 
+  geom_jitter() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank())
+
+
+# PEARSON CORRELATION
+cor(x=data$Exercise, y=data$Mental_Health, method = c("pearson"))
+cor(x=data$Concern_Health, y=data$Mental_Health, method = c("pearson"))
+cor(x=data$Concern_Social, y=data$Mental_Health, method = c("pearson"))
+cor(x=data$Concern_Confine, y=data$Mental_Health, method = c("pearson"))
+
+
+
+# SPEARMAN'S CORRELATION
+cor(x=data$Exercise, y=data$Mental_Health, method = c("spearman"))
+cor(x=data$Concern_Health, y=data$Mental_Health, method = c("spearman"))
+cor(x=data$Concern_Social, y=data$Mental_Health, method = c("spearman"))
+cor(x=data$Concern_Confine, y=data$Mental_Health, method = c("spearman"))
+
+
+# Since our dependent variable is of ordianal type, we change its datatype with the help of as.ordered() helper function.
+data$Mental_Health <- as.ordered(data$Mental_Health)
+
+```
+
+```{r Modeling Ordinal Logistic Regression: H1 }
+
+# Defining Model for The hypothesis H1: "Exercise positively impacts Mental Health of a Canadian"
+
+
+Model_1<- polr(Mental_Health ~ Exercise + Age_Group + Gender, data = data, Hess = TRUE, method = "probit")
+
+summary(Model_1)
+
+summary_table <- coef(summary(Model_1))
+
+pval <- pnorm(abs(summary_table[, "t value"]),lower.tail = FALSE)* 2
+
+summary_table <- cbind(summary_table, "p value" = pval)
+
+summary_table
+
+exp(cbind(COR = coef(Model_1)))
+
+# 1-pchisq(deviance(Model_1),df.residual(Model_1))
+# 
+# 
+# set.seed(101) # for reproducibility
+# 
+# sres <- resids(Model_1)
+# 
+
+
+# #############################################################
+# 
+# # Working code for plot
+# 
+# pres <- presid(Model_1)
+# 
+# p1 <- ggplot(data.frame(x = data$Exercise, y = pres), aes(x, y)) +
+#   geom_point(color = "#444444", shape = 19, size = 2, alpha = 0.5) +
+#   geom_smooth(color = "red", se = FALSE) +
+#   ylab("Probability-scale residual")
+# 
+# p2 <- ggplot(data.frame(y = pres), aes(sample = y)) +
+#   stat_qq(distribution = qunif, dparams = list(min = -1, max = 1), alpha = 0.5) +
+#   xlab("Sample quantile") +
+#   ylab("Theoretical quantile")
+# 
+# grid.arrange(p1, p2, ncol = 2)
+# 
+# 
+# ##############################################################
+# 
+# # Working code for plot
+# 
+# #plot(effect("Age_Group:Exercise", Model_1), style = "stacked")
+# 
+# Model_1 <- update(Model_1, Hess=TRUE)
+# pr <- profile(Model_1)
+# confint(pr)
+# plot(pr)
+# pairs(pr)
+# 
+
+
+
+```
+
+
+Interpretation of the model_1
+
+----------------Exercise vs Mental Health--------
+  
+  
+  From the summary table of the model we can see that for all the variables the p-value is less than 0.05 (p<0.05) so we can say that all the coefficients are statistically significant and different from Zero, at 95% level of confidence. In simple words the coefficients are meaningful.
+
+Now looking at the coefficient of Exercise (0.4479) we can interpret it as, for unit increase in the "Exercise", we expect about 0.4479 increase in the  expected value of "Mental Health" in the log odds scale, given that all other variables ("Age_Group" and "Gender") in the model are held constant.
+
+For each variable in the model, we now calculate the Cumulative log odds ratio (COR); it is given by e^x; x is the coefficient of the variable in model.
+
+This log odds ratio gives more insights to the model.
+
+From the COR's of the independent variable we can see that the COR of "Exercise" is 1.5650. Meaning that exercising activity has a 56% higher odds of being in higher rather than lower categories of "Mental Health". In simple words, exercising people are found to be more likely to have Higher Levels of mental health, when keeping  Age_Group and Gender as constant.
+
+
+One more interesting thing comes out form COR of "Gender", which is 0.7340. Meaning; with unit increase in Gender (Going from Male to female scores) there is 1-0.7340 = -0.226 or 22.6% lower odds of being in higher rather than lower categories of "Mental Health" when keeping other variables as constant. In more simple words we can say during  the covid-19 survey, women were more likely to have had poor mental health as compared to men.
+
+
+```{r Modeling Ordinal Logistic Regression: H2 }
+
+# Defining Model for The hypothesis H2: "Self concerns about Health have negative impacts on Mental Health of a Canadian"
+
+
+Model_2<- polr(Mental_Health ~ Concern_Health + Age_Group + Gender, data = data, Hess = TRUE)
+
+summary(Model_2)
+
+summary_table <- coef(summary(Model_2))
+
+pval <- pnorm(abs(summary_table[, "t value"]),lower.tail = FALSE)* 2
+
+summary_table <- cbind(summary_table, "p value" = pval)
+
+summary_table
+ 
+exp(cbind(COR = coef(Model_2)))
+
+```
+
+Interpretation of the model_2
+
+----------------Concern_Health vs Mental Health--------
+
+
+From the summary table of the model we can see that for all the variables the p-value is less than 0.05 (p<0.05) so we can say that all the coefficients are statistically significant and different from Zero, at 95% level of confidence. In simple words the coefficients are meaningful.
+
+Now looking at the coefficient of Concern_Health  (-0.3774) we can interpret it as, for unit increase in the "Concern_Health", we expect about 0.3774 decrease in the  expected value of "Mental Health" in the log odds scale, given that all other variables ("Age_Group" and "Gender") in the model are held constant.
+
+For each variable in the model, we now calculate the Cumulative log odds ratio (COR); it is given by e^x; x is the coefficient of the variable in model.
+
+This log odds ratio gives more insights to the model.
+
+From the COR's of the independent variable we can see that the COR of "Concern_Health" is 0.6856. Meaning that Concern about own health activity has a (1.00 - 0.6856 = 0.3144 or) 31.44% lower odds of being in higher rather than lower categories of "Mental Health". In simple words, people concerned about their own Health are found to be less likely to have Higher Levels of mental health, when keeping  Age_Group and Gender as constant.
+
+Our previous interesting observation again comes to be true while looking at COR's of Gender for this model.
+
+
+```{r Modeling Ordinal Logistic Regression: H3 }
+
+# Defining Model for The hypothesis H4: "Concerns about maintaining social ties have negative impacts on Mental Health of a Canadian"
+
+
+Model_3<- polr(Mental_Health ~ Concern_Social + Age_Group + Gender, data = data, Hess = TRUE)
+
+summary(Model_3)
+
+summary_table <- coef(summary(Model_3))
+
+pval <- pnorm(abs(summary_table[, "t value"]),lower.tail = FALSE)* 2
+
+summary_table <- cbind(summary_table, "p value" = pval)
+
+summary_table
+ 
+exp(cbind(COR = coef(Model_3)))
+
+```
+Interpretation of the model_3
+
+----------------Concern_Social vs Mental Health--------
+
+
+From the summary table of the model we can see that for all the variables the p-value is less than 0.05 (p<0.05) so we can say that all the coefficients are statistically significant and different from Zero, at 95% level of confidence. In simple words the coefficients are meaningful.
+
+Now looking at the coefficient of Concern_Social  (-0.2092) we can interpret it as, for unit increase in the "Concern_Health", we expect about 0.2092 decrease in the  expected value of "Mental Health" in the log odds scale, given that all other variables ("Age_Group" and "Gender") in the model are held constant.
+
+For each variable in the model, we now calculate the Cumulative log odds ratio (COR); it is given by e^x; x is the coefficient of the variable in model.
+
+This log odds ratio gives more insights to the model.
+
+From the COR's of the independent variable we can see that the COR of "Concern_Social" is 0.8111. Meaning that Concern about maintaining social ties has a (1.00 - 0.8111 = 0.1889 or) 18.89% lower odds of being in higher rather than lower categories of "Mental Health". In simple words, people concerned about maintaining social ties are found to be less likely to have Higher Levels of mental health, when keeping  Age_Group and Gender as constant.
+
+Our previous interesting observation again comes to be true while looking at COR's of Gender for this model.
+
+
+```{r Modeling Ordinal Logistic Regression: H4 }
+
+# Defining Model for The hypothesis H4: "Concerns about family stress from confinement have negative impacts on Mental Health of a Canadian"
+
+
+Model_4<- polr(Mental_Health ~ Concern_Confine + Age_Group + Gender, data = data, Hess = TRUE)
+
+summary(Model_4)
+
+summary_table <- coef(summary(Model_4))
+
+pval <- pnorm(abs(summary_table[, "t value"]),lower.tail = FALSE)* 2
+
+summary_table <- cbind(summary_table, "p value" = pval)
+
+summary_table
+ 
+exp(cbind(COR = coef(Model_4)))
+
+```
+Interpretation of the model_4
+
+----------------Concern_Confine vs Mental Health--------
+
+
+From the summary table of the model we can see that for all the variables the p-value is less than 0.05 (p<0.05) so we can say that all the coefficients are statistically significant and different from Zero, at 95% level of confidence. In simple words the coefficients are meaningful.
+
+Now looking at the coefficient of Concern_Confine  (-0.4670) we can interpret it as, for unit increase in the "Concern_Confine", we expect about 0.4670 decrease in the  expected value of "Mental Health" in the log odds scale, given that all other variables ("Age_Group" and "Gender") in the model are held constant.
+
+For each variable in the model, we now calculate the Cumulative log odds ratio (COR); it is given by e^x; x is the coefficient of the variable in model.
+
+This log odds ratio gives more insights to the model.
+
+From the COR's of the independent variable we can see that the COR of "Concern_Confine" is 0.6268. Meaning that Concern about Family stress due to confinement  has a (1.00 - 0.6268 = 0.3732 or) 37.32% lower odds of being in higher rather than lower categories of "Mental Health". In simple words, people concerned about family stress due to confinement are found to be less likely to have Higher Levels of mental health, when keeping  Age_Group and Gender as constant.
+
+Our previous interesting observation again comes to be true while looking at COR's of Gender for this model.
+
+
+
+```{r Modeling Ordinal Logistic Regression: Final Single model}
+
+
+
+Model<- polr(Mental_Health ~ Exercise + Concern_Health + Concern_Social + Concern_Confine + Age_Group + Gender, data = data, Hess = TRUE)
+
+summary(Model)
+
+summary_table <- coef(summary(Model))
+
+pval <- pnorm(abs(summary_table[, "t value"]),lower.tail = FALSE)* 2
+
+summary_table <- cbind(summary_table, "p value" = pval)
+
+summary_table
+ 
+exp(cbind(COR = coef(Model)))
+
+brant(Model)
+
+```
