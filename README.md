@@ -105,13 +105,3 @@
 ![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide52.jpg?raw=true)
 
 ![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide53.jpg?raw=true)
-
-![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide54.jpg?raw=true)
-
-![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide55.jpg?raw=true)
-
-![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide56.jpg?raw=true)
-
-![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide57.jpg?raw=true)
-
-![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide58.jpg?raw=true)
