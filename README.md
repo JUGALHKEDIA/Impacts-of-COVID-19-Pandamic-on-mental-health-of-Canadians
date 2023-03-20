@@ -1,3 +1,5 @@
+**Impacts of Covid - 19 pandemic on the Mental Health of Canadians**
+
 ![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide1.jpg?raw=true)
 
 ![Slide](https://github.com/JUGALHKEDIA/Impacts-of-COVID-19-Pandamic-on-mental-health-of-Canadians/blob/main/PresentationSlides/Slide2.jpg?raw=true)
